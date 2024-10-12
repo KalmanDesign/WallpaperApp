@@ -11,6 +11,8 @@ struct FavoritesView: View {
     @EnvironmentObject var vm: WallpaperViewModel
     @State private var isGrid = true
     @State private var selectedWallpaper: WallpaperModel?  // 改回 WallpaperModel
+
+    
     
     var body: some View {
         NavigationStack {

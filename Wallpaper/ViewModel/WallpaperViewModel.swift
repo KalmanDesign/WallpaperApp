@@ -19,6 +19,7 @@ class WallpaperViewModel:ObservableObject{
     @Published var isLoading = false // 是否正在加载
     @Published var errorMassage: String? // 错误信息
     @Published var favoriteWallpapers: [String] = [] // 收藏的壁纸id
+    @Published var favoriteItems: [any WallpaperItem] = []
     
     private let wallpaperAPI = APIService() // 壁纸API
     
@@ -101,6 +102,9 @@ class WallpaperViewModel:ObservableObject{
         }
         // 每次调用都打印出favoriteWallpapers列表的内容
         print("当前收藏的壁纸ID列表: \(favoriteWallpapers)")
+        
+        // 更新收藏列表
+        getFavoriteList()
     }
     
     // 检查壁纸是否已收藏
@@ -110,17 +114,38 @@ class WallpaperViewModel:ObservableObject{
     }
     
     
+    
     // 获取收藏的壁纸
-    func getFavoriteWallpapers()->[WallpaperModel]{
+    func getFavoriteWallpapers()->[any WallpaperItem]{
         // 使用filter函数过滤出收藏的壁纸
-        return wallpaperList.filter{favoriteWallpapers.contains($0.id)}
-        print("")
+//        return wallpaperList.filter{favoriteWallpapers.contains($0.id)}
+        return favoriteItems
     }
     
     
     
-    
-    
-    
-    
+    //MARK:  获取收藏列表
+    func getFavoriteList() {
+        var newFavoriteItems: [any WallpaperItem] = []
+        
+        // 遍历所有的壁纸列表，添加已收藏的项
+        for wallpaper in wallpaperList where favoriteWallpapers.contains(wallpaper.id) {
+            newFavoriteItems.append(wallpaper)
+        }
+        
+        // 遍历所有的主题照片列表，添加已收藏的项
+        for photo in topicPhotos where favoriteWallpapers.contains(photo.id) {
+            newFavoriteItems.append(photo)
+        }
+        
+        // 遍历所有的主题列表，添加已收藏的项
+        for topic in topics where favoriteWallpapers.contains(topic.id) {
+            newFavoriteItems.append(topic)
+        }
+        
+        // 更新 favoriteItems 属性
+        DispatchQueue.main.async {
+            self.favoriteItems = newFavoriteItems
+        }
+    }
 }
