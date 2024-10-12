@@ -13,7 +13,6 @@ struct FavoritesView: View {
     @State private var selectedWallpaper: WallpaperModel? 
 
     
-    //收藏列表暂未支持topic 图片
     var body: some View {
         NavigationStack {
             Group {
