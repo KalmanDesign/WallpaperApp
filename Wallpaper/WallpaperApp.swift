@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct WallpaperApp: App {
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()               

@@ -11,14 +11,19 @@ struct WallpaperTopicsView: View {
     @State private var hasLoaded: Bool = false  // 避免首次加载时出现空白
     var body: some View {
         NavigationStack{
-            ScrollView(.vertical,showsIndicators: false){
-                ForEach(vm.topics,id: \.id){topic in
-                    NavigationLink(destination: TopicsDetailView(slug: topic.slug)) {
-                        TopicCard(topic: topic)
+            if vm.topics.isEmpty{
+                ProgressView()
+            }else{
+                ScrollView(.vertical,showsIndicators: false){
+                    ForEach(vm.topics,id: \.id){topic in
+                        NavigationLink(destination: TopicsDetailView(slug: topic.slug)) {
+                            TopicCard(topic: topic)
+                        }
                     }
                 }
+                .padding(.bottom,24)
+                .navigationTitle("Topics")
             }
-            .navigationTitle("Topics")
         }
         .preferredColorScheme(.dark)
         .onAppear(){
@@ -35,8 +40,8 @@ struct TopicCard:View {
     let topic:WallpaperTopics
     var body: some View {
         ZStack{
-            AsyncImageView(imageURL: topic.previewPhotos.first?.urls.small ?? "", imageCornerRadius: 16){_ in}
-                .aspectRatio(2/3, contentMode: .fill)
+            AsyncImageView(imageURL: topic.previewPhotos.first?.urls.small ?? "", imageCornerRadius: 24){_ in}
+                .aspectRatio(2/3,contentMode: .fill)
                 .overlay(alignment:.bottom){
                     VStack(alignment:.leading,spacing:12){
                         Text(topic.slug.capitalized)
@@ -50,7 +55,7 @@ struct TopicCard:View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(.ultraThinMaterial)  // 使用系统提供的磨砂玻璃效果
                     .foregroundColor(.white)
-                    .cornerRadius(16)
+                    .cornerRadius(24)
                 }
                 .padding(.top,12)
                 .padding(.horizontal,16)

@@ -72,7 +72,7 @@ class APIService:ObservableObject {
     
     //
     func fetchPhotosForTopic(slug: String) async throws -> [WallpaperTopicsPhotos]{
-        let urlString = "\(baseURL)/topics/\(slug)/photos?per_page=21"
+        let urlString = "\(baseURL)/topics/\(slug)/photos?per_page=100"
         guard let url = URL(string: urlString) else {
             throw APIError.badRequest
         }

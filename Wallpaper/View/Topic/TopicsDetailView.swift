@@ -61,7 +61,7 @@ struct TopicsDetailView: View {
             }
         }
         .fullScreenCover(item: $selectedWallpaper){wallpaper in
-            NormalImage(wallpaper: wallpaper)
+            ImageDetailView(wallpaper: wallpaper)
         }
     }
     

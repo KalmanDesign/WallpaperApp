@@ -16,7 +16,6 @@ import SwiftUI
 struct ToastView: View {
     let message: String
     let item: any WallpaperItem
-    //   let wallpaper:WallpaperModel
     @EnvironmentObject var vm:WallpaperViewModel
     
     var body: some View {

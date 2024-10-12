@@ -6,12 +6,19 @@
 //
 
 import SwiftUI
+
+// 定义 AuthorDetailView 结构体，遵循 View 协议
 struct AuthorDetailView: View {
+    // 定义 wallpaper 属性，类型为 any WallpaperItem
     let wallpaper: any WallpaperItem
     
+    // 定义 body 属性，返回一个 View
     var body: some View {
+        // 使用 GeometryReader 获取屏幕尺寸
         GeometryReader { geo in
+            // 创建一个 ScrollView
             ScrollView {
+                // 创建一个 VStack，用于布局视图
                 VStack(spacing: 0) {
                     // 图片视图
                     AsyncImageView(imageURL: wallpaper.wallpaperUser.profileImageLarge ?? "", imageCornerRadius: 0) { _ in }
@@ -40,38 +47,9 @@ struct AuthorDetailView: View {
             }
             .frame(width: geo.size.width)
         }
+        .preferredColorScheme(.dark)
         .edgesIgnoringSafeArea(.top)
     }
-//    
-//   private var socialMediaIcons: some View {
-//    HStack(spacing: 16) {
-//        if let instagram = wallpaper.wallpaperUser.name, !instagram.isEmpty {
-//            socialIcon(name: "instagram", url: "https://www.instagram.com/\(instagram)")
-//        }
-//        if let twitter = wallpaper.wallpaperUser.name, !twitter.isEmpty {
-//            socialIcon(name: "X", url: "https://x.com/\(twitter)")
-//        }
-//        if let paypal = wallpaper.wallpaperUser.name, !paypal.isEmpty {
-//            socialIcon(name: "paypal", url: paypal)
-//        }
-//        if let portfolio = wallpaper.wallpaperUser.name, !portfolio.isEmpty {
-//            socialIcon(name: "portfolio", url: portfolio)
-//        }
-//    }
-//}
-//    
-//    private func socialIcon(name: String, url: String?) -> some View {
-//        Image(name)
-//            .resizable()
-//            .scaledToFit()
-////            .frame(width: name == "X" ? 32 : 30)
-//            .frame(width: name == "portfolio" ? 28: 32)
-//            .onTapGesture {
-//                if let urlString = url, let url = URL(string: urlString) {
-//                    UIApplication.shared.open(url)
-//                }
-//            }
-//    }
 }
 
 #Preview {

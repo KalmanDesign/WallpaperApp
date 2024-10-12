@@ -10,7 +10,7 @@ import SwiftUI
 struct FavoritesView: View {
     @EnvironmentObject var vm: WallpaperViewModel
     @State private var isGrid = true
-    @State private var selectedWallpaper: WallpaperModel?  // 改回 WallpaperModel
+    @State private var selectedWallpaper: WallpaperModel? 
 
     
     
@@ -35,6 +35,7 @@ struct FavoritesView: View {
                 }
             }
         }
+        .preferredColorScheme(.dark)
         .navigationTitle("My Favorite")
         .toolbar {
             if !vm.getFavoriteWallpapers().isEmpty{
@@ -49,7 +50,7 @@ struct FavoritesView: View {
             }
         }
         .fullScreenCover(item: $selectedWallpaper){wallpaper in
-            NormalImage(wallpaper: wallpaper)
+            ImageDetailView(wallpaper: wallpaper)
         }
     }
 }
