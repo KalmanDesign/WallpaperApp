@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>77</string>
+					<string>92</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>76</string>
+					<string>91</string>
 					<key>Timestamp</key>
-					<string>750415181.4569139</string>
+					<string>750494341.3699059</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,16 +34,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>        }
+				<string>            }
 </string>
 				<key>leading</key>
-				<string>                }
-            }
+				<string>                    hasLoaded = true //
+                }
 </string>
 				<key>trailing</key>
-				<string>        .fullScreenCover(item: $selectedWallpaper){wallpaper in
+				<string>        }
+        .fullScreenCover(item: $selectedWallpaper){wallpaper in
             ImageDetailView(wallpaper: wallpaper)
-        }
 </string>
 			</dict>
 			<key>type</key>

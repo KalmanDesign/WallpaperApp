@@ -8,58 +8,58 @@
 import SwiftUI
 
 struct CachedImageView: View {
-    // 存储壁纸模型和显示宽度
-    let wallpaper: WallpaperModel
-    // 使用@State来管理图片的加载状态
+    let wallpaper: any WallpaperItem
     @State private var image: UIImage?
     
     var body: some View {
         Group {
             if let image = image {
-                // 如果图片已加载，显示图片
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else {
-                // 如果图片未加载，显示加载指示器
                 ProgressView()
             }
         }
-        // 设置图片框架大小，保持原始宽高比
-        .aspectRatio(CGFloat(wallpaper.width) / CGFloat(wallpaper.height), contentMode: .fit)
-        .clipped() // 裁剪超出边界的部分
-        .cornerRadius(8) // 添加圆角
-        .onAppear(perform: loadImage) // 视图出现时加载图片
+        .aspectRatio(contentMode: .fit)
+        .clipped()
+        .cornerRadius(8)
+        .onAppear(perform: loadImage)
     }
-    // 加载图片的函数
+    
     private func loadImage() {
-        // 步骤1: 尝试从缓存中获取图片
-        if let cachedImage = ImageCache.shared.get(forKey: wallpaper.urls.small) {
-            // 如果缓存中有图片，直接使用
+        guard let imageUrl = getImageUrl() else { return }
+        
+        if let cachedImage = ImageCache.shared.get(forKey: imageUrl) {
             self.image = cachedImage
         } else {
-            // 如果缓存中没有，下载图片
-            downloadImage()
+            downloadImage(from: imageUrl)
         }
     }
     
-    // 下载图片的函数
-    private func downloadImage() {
-        // 步骤2: 创建URL对象
-        guard let url = URL(string: wallpaper.urls.small) else { return }
+    private func getImageUrl() -> String? {
+        switch wallpaper {
+        case let model as WallpaperModel:
+            return model.urls.small
+        case let photo as WallpaperTopicsPhotos:
+            return photo.urls.small
+        case let topic as WallpaperTopics:
+            return topic.previewPhotos.first?.urls.small
+        default:
+            return nil
+        }
+    }
+    
+    private func downloadImage(from urlString: String) {
+        guard let url = URL(string: urlString) else { return }
         
-        // 步骤3: 使用URLSession下载图片
         URLSession.shared.dataTask(with: url) { data, response, error in
-            // 步骤4: 检查下载的数据并创建UIImage对象
             guard let data = data, let downloadedImage = UIImage(data: data) else { return }
             
-            // 步骤5: 在主线程更新UI和缓存
             DispatchQueue.main.async {
-                // 更新@State属性，触发UI刷新
                 self.image = downloadedImage
-                // 将下载的图片存入缓存
-                ImageCache.shared.set(downloadedImage, forKey: self.wallpaper.urls.small)
+                ImageCache.shared.set(downloadedImage, forKey: urlString)
             }
-        }.resume() // 开始下载任务
+        }.resume()
     }
 }

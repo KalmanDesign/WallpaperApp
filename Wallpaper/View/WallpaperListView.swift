@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import WaterfallGrid
+import SDWebImageSwiftUI
 
 struct WallpaperListView: View {
     @EnvironmentObject var vm: WallpaperViewModel
@@ -23,21 +25,35 @@ struct WallpaperListView: View {
                 if vm.wallpaperList.isEmpty{
                     ProgressView()
                 }else{
-                    ScrollView{
-                       LazyWaterFallGrid(columns: isGrid ? 2 : 1,
-                                          items: vm.allWallpapers) { wallpaper in
-                           CachedImageView(wallpaper:wallpaper)
+                    ScrollView(showsIndicators: false){
+                        WaterfallGrid(vm.allWallpapers) { wallpaper in
+//                            AsyncImageView(imageURL: wallpaper.urls.smallS3, imageCornerRadius: 12) { _ in}
+//                                .aspectRatio(contentMode: .fit)
+//                                .onTapGesture {
+//                                    selectedWallpaper = wallpaper
+//                                }
+                            WebImage(url: URL(string: wallpaper.urls.smallS3))
+                                .resizable()
+                                .scaledToFit()
+                                .cornerRadius(8)
                                 .onTapGesture {
                                     selectedWallpaper = wallpaper
                                 }
-                                .aspectRatio(contentMode: .fit)
-                                .animation(.easeInOut, value: isGrid)
-                                .transition(.opacity)
                         }
+                        .gridStyle(
+                           columnsInPortrait: isGrid ? 2 : 1,
+                           columnsInLandscape: 3,
+                           spacing: 8,
+                           animation: .easeInOut(duration: 0.5)
+                         )
+                        .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
+
+
+                        
                         
                         Button(action: {
                             Task{
-                                await vm.fetchRandomPhotos(num: 30)
+                                await vm.fetchRandomPhotos(num: 12)
                                 scrollToTop = true
                             }
                         }, label: {
@@ -80,6 +96,7 @@ struct WallpaperListView: View {
         }
     }
 }
+
 
 
 

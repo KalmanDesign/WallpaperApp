@@ -13,7 +13,7 @@
 
 import SwiftUI
 
-struct WaterFallGrid<Content: View, T: Identifiable>: View {
+struct WaterFallGridView<Content: View, T: Identifiable>: View {
     let columns: Int
     let items: [T]
     let content: (T, CGFloat) -> Content

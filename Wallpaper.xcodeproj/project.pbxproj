@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3A7A04002CBB9E0B0019F9D6 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A7A03FF2CBB9E0B0019F9D6 /* SDWebImageSwiftUI */; };
+		3ADAB2982CBAF25C00277909 /* WaterfallGrid in Frameworks */ = {isa = PBXBuildFile; productRef = 3ADAB2972CBAF25C00277909 /* WaterfallGrid */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3AEBCF742CB2F3EE008513F2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A7A04002CBB9E0B0019F9D6 /* SDWebImageSwiftUI in Frameworks */,
+				3ADAB2982CBAF25C00277909 /* WaterfallGrid in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = Wallpaper;
 			packageProductDependencies = (
+				3ADAB2972CBAF25C00277909 /* WaterfallGrid */,
+				3A7A03FF2CBB9E0B0019F9D6 /* SDWebImageSwiftUI */,
 			);
 			productName = Wallpaper;
 			productReference = 3AEBCF632CB2F3EA008513F2 /* Wallpaper.app */;
@@ -195,6 +204,10 @@
 			);
 			mainGroup = 3AEBCF5A2CB2F3EA008513F2;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3ADAB2962CBAF1DB00277909 /* XCRemoteSwiftPackageReference "WaterfallGrid" */,
+				3A7A03FE2CBB9E0B0019F9D6 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3AEBCF642CB2F3EA008513F2 /* Products */;
 			projectDirPath = "";
@@ -562,6 +575,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3A7A03FE2CBB9E0B0019F9D6 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.2;
+			};
+		};
+		3ADAB2962CBAF1DB00277909 /* XCRemoteSwiftPackageReference "WaterfallGrid" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/paololeonardi/WaterfallGrid";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3A7A03FF2CBB9E0B0019F9D6 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A7A03FE2CBB9E0B0019F9D6 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		3ADAB2972CBAF25C00277909 /* WaterfallGrid */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3ADAB2962CBAF1DB00277909 /* XCRemoteSwiftPackageReference "WaterfallGrid" */;
+			productName = WaterfallGrid;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3AEBCF5B2CB2F3EA008513F2 /* Project object */;
 }

@@ -30,19 +30,29 @@ class WallpaperViewModel:ObservableObject{
     func fetchRandomPhotos(num: Int) async{
         self.isLoading = true
         self.errorMassage = nil
-        do{
-            print("开始获取随机照片，数量：\(num)")
-            let result = try await wallpaperAPI.fetchRandomPhotos(count: num)
-            await MainActor.run {
-                self.wallpaperList.append(contentsOf: result)
-                self.allWallpapers.append(contentsOf: result)
-                print("更新后的 wallpaperList 数量：\(self.wallpaperList.count)")
-                print("更新后的 allWallpapers 数量：\(self.allWallpapers.count)")
-                self.allWallpapers = Array(NSOrderedSet(array: self.allWallpapers)) as! [WallpaperModel]
+        let maxRetries = 3 // 最大重试次数
+        var retries = 0 // 当前重试次数
+        while retries < maxRetries {
+            do{
+                print("开始获取随机照片，数量：\(num), 重试次数：\(retries)")
+                let result = try await wallpaperAPI.fetchRandomPhotos(count: num)
+                await MainActor.run {
+                    self.wallpaperList.append(contentsOf: result)
+                    self.allWallpapers.append(contentsOf: result)
+                    print("更新后的 wallpaperList 数量：\(self.wallpaperList.count)")
+                    print("更新后的 allWallpapers 数量：\(self.allWallpapers.count)")
+                    self.allWallpapers = Array(NSOrderedSet(array: self.allWallpapers)) as! [WallpaperModel]
+                }
+                break // 成功获取后退出循环
+            }catch let error as NSError{
+                retries += 1 // 每次失败都增加重试次数
+                errorMassage = "获取壁纸失败, 错误信息: \(error.localizedDescription)"
+                print("获取壁纸失败, 错误信息: \(error.localizedDescription), 重试次数：\(retries)")
+                if retries == maxRetries {
+                    print("达到最大重试次数，停止重试")
+                    break // 达到最大重试次数后退出循环
+                }
             }
-        }catch{
-            errorMassage = "Failed to fetch wallpapers"
-            print("Failed to fetch wallpapers")
         }
         self.isLoading = false
     }
@@ -108,8 +118,9 @@ class WallpaperViewModel:ObservableObject{
             favoriteWallpapers.append(item.id)
             favoriteItems.append(item)
         }
-        print("当前收藏的壁纸ID列表: \(favoriteWallpapers)")
-        print("当前收藏的壁纸项目: \(favoriteItems)")
+        // print("当前收藏的壁纸ID列表: \(favoriteWallpapers)")
+        // print("当前收藏的壁纸项目: \(favoriteItems)")
+         print("当前收藏的壁纸项目数量: \(favoriteItems.count)")
         
         getFavoriteList()
     }
@@ -124,6 +135,14 @@ class WallpaperViewModel:ObservableObject{
     // MARK: - 获取收藏的壁纸
     func getFavoriteWallpapers()->[any WallpaperItem]{
         return favoriteItems
+//        return favoriteItems.filter{item in
+//            switch item{
+//            case is WallpaperModel, is WallpaperTopicsPhotos, is WallpaperTopics:
+//                return true
+//            default:
+//                return false
+//            }
+//        }
     }
     
     
