@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import WaterfallGrid
+import SDWebImageSwiftUI
 
 struct TopicsDetailView: View {
     @EnvironmentObject var vm: WallpaperViewModel
@@ -20,7 +22,8 @@ struct TopicsDetailView: View {
             ZStack{
                 VStack(spacing:16){
                     //MARK: Pic
-                    AsyncImageView(imageURL: vm.topics.first(where: {$0.slug == slug})?.previewPhotos.first?.urls.full ?? "", imageCornerRadius: 0) { _ in}
+                    WebImage(url: URL(string: (vm.topics.first(where: {$0.slug == slug})?.previewPhotos.first?.urls.small ?? "")))
+                        .resizable()
                         .aspectRatio(2/2, contentMode: .fill)
                         .overlay(alignment: .bottomLeading) {
                             LinearGradient(gradient: Gradient(colors: [.clear, .black]), startPoint: .top, endPoint: .bottom)
@@ -37,17 +40,16 @@ struct TopicsDetailView: View {
                             }
                             .foregroundColor(.white)
                         }
-                    LazyWaterFallGrid(columns: 2, items: vm.topicPhotos) { photo  in
-                        AsyncImageView(imageURL: photo.urls.thumb, imageCornerRadius: 12) { _ in}
-                            .aspectRatio(2/3, contentMode: .fill)
-                            .frame(maxWidth: .infinity)  // 使用 maxWidth 而不是固定高度
-                            .clipped()
+                    WaterfallGrid(vm.topicPhotos) { photo in
+                        WebImage(url: URL(string: photo.urls.small))
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(8)
                             .onTapGesture {
                                 selectedWallpaper = photo
                             }
-                        
-                        
                     }
+                    .gridStyle(columns: 2,animation: .easeInOut(duration: 0.5))
                 }
             }
         }

@@ -5,6 +5,7 @@
 //  Created by Kalman on 2024/10/9.
 //
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct WallpaperTopicsView: View {
     @EnvironmentObject var vm:WallpaperViewModel
@@ -40,8 +41,10 @@ struct TopicCard:View {
     let topic:WallpaperTopics
     var body: some View {
         ZStack{
-            AsyncImageView(imageURL: topic.previewPhotos.first?.urls.small ?? "", imageCornerRadius: 24){_ in}
-                .aspectRatio(2/3,contentMode: .fill)
+//            AsyncImageView(imageURL: topic.previewPhotos.first?.urls.small ?? "", imageCornerRadius: 24){_ in}
+            WebImage(url: URL(string: topic.previewPhotos.first?.urls.small ?? ""))
+                .cornerRadius(24)
+                .aspectRatio(2/3,contentMode: .fit)
                 .overlay(alignment:.bottom){
                     VStack(alignment:.leading,spacing:12){
                         Text(topic.slug.capitalized)
