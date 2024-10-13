@@ -129,13 +129,13 @@ struct ImageDetailView: View {
                 impact.impactOccurred()
                 withAnimation {
                     showFavoriteToast = true // 直接设置 showToast 为 true，而不是 toggle
-                    print("显示 Toast")
+                    // print("显示 Toast")
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     withAnimation {
                         showFavoriteToast = false
-                        print("隐藏 Toast")                    
+                        // print("隐藏 Toast")                    
                         }
                 }
             }label: {

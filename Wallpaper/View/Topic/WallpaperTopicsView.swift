@@ -23,9 +23,10 @@ struct WallpaperTopicsView: View {
                     }
                 }
                 .padding(.bottom,24)
-                .navigationTitle("Topics")
+               
             }
         }
+        .navigationTitle("Topics")
         .preferredColorScheme(.dark)
         .onAppear(){
             if !hasLoaded{

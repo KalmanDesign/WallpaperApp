@@ -12,12 +12,11 @@ import SDWebImageSwiftUI
 struct FavoritesView: View {
     @EnvironmentObject var vm: WallpaperViewModel
     @State private var selectedWallpaper: (any WallpaperItem)?
-    @State private var isGrid = true // 添加这行
     
     var body: some View {
         NavigationStack {
             Group {
-                if vm.getFavoriteWallpapers().isEmpty {
+                if vm.favoriteItems.isEmpty {
                     VStack {
                         Spacer()
                         Text("暂时没有收藏")
@@ -27,62 +26,68 @@ struct FavoritesView: View {
                     }
                 } else {
                     ScrollView(showsIndicators: false) {
-                        WaterfallGrid(vm.getFavoriteWallpapers(), id: \.id) { wallpaper in
+                        WaterfallGrid(vm.favoriteItems, id: \.id) { wallpaper in
                             WebImage(url: URL(string: getImageUrl(wallpaper)))
-                               .resizable()
-                                .scaledToFit()
-                                .cornerRadius(8)
-                                .aspectRatio(contentMode: .fit)
+                                // .resizable()
+                                // .scaledToFill()
+                                .transition(.fade(duration: 0.5))
+                                .cornerRadius(12)
+                                // .aspectRatio(contentMode: .fill)
+                                .aspectRatio(3/4, contentMode: .fill) // 设置宽高比为 3:4
                                 .onTapGesture {
                                     selectedWallpaper = wallpaper
                                 }
                         }
                         .gridStyle(
-                            columnsInPortrait: isGrid ? 2 : 1,
+                            columnsInPortrait: 1,
                             columnsInLandscape: 3,
-                            spacing: 8,
+                            spacing: 16,
                             animation: .easeInOut(duration: 0.5)
                         )
-                        .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
-                        
-                        
-                        
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                     }
-                    
                 }
             }
             .navigationTitle("我的收藏")
             .toolbar {
                 ToolbarItem {
-                    Image(systemName: isGrid ? "rectangle.grid.2x2.fill" : "rectangle.grid.1x2.fill")
-                        .onTapGesture {
-                            withAnimation {
-                                isGrid.toggle()
-                            }
+                        Button(action: {
+                            vm.deleteFavorite()
+                        }) {
+                            Image(systemName: "trash.fill")
                         }
+                        
+                       
+                    
                 }
             }
         }
         .preferredColorScheme(.dark)
-        //        .fullScreenCover(item: $selectedWallpaper){wallpaper in
-        //            ImageDetailView(wallpaper: wallpaper as! WallpaperItem)
-        //        }
-    }
-    private func getImageUrl(_ item: any WallpaperItem) -> String {
-        switch item {
-        case let model as WallpaperModel:
-            return model.urls.small
-        case let photo as WallpaperTopicsPhotos:
-            return photo.urls.small
-        case let topic as WallpaperTopics:
-            return topic.previewPhotos.first?.urls.small ?? ""
-        default:
-            return ""
+        .onAppear {
+            vm.getFavoriteList()
         }
     }
     
+   private func getImageUrl(_ item: any WallpaperItem) -> String {
+    let url: String
+    switch item {
+    case let model as WallpaperModel:
+        url = model.urls.small
+        print("获取壁纸模型的图片 URL: \(url)")
+    case let photo as WallpaperTopicsPhotos:
+        url = photo.urls.small
+        print("获取主题照片的图片 URL: \(url)")
+    case let topic as WallpaperTopics:
+        url = topic.previewPhotos.first?.urls.small ?? ""
+        print("获取主题预览照片的图片 URL: \(url)")
+    default:
+        url = ""
+        print("未知的壁纸项类型，返回空 URL")
+    }
+    print("Image URL for item \(item.id): \(url)")
+    return url
 }
-
+}
 
 #Preview {
     FavoritesView()

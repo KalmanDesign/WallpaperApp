@@ -24,6 +24,16 @@ struct ContentView: View {
                     Label("home page", systemImage: "square.filled.on.square")
                 }
                 
+                
+                
+                NavigationStack {
+                    WallpaperTopicsView()
+                }
+                .tabItem {
+                    Label("Topic", systemImage: "heart.text.square.fill")
+                }
+                
+                
                 NavigationStack {
                     FavoritesView()
                 }
@@ -32,10 +42,10 @@ struct ContentView: View {
                 }
                 
                 NavigationStack {
-                    WallpaperTopicsView()
+                    SettingView()
                 }
                 .tabItem {
-                    Label("Topic", systemImage: "heart.text.square.fill")
+                    Label("Favorites", systemImage: "tray.fill")
                 }
             }
             .opacity(showTabView ? 1 : 0)  // 控制 TabView 的可见性

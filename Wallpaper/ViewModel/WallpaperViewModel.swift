@@ -110,7 +110,7 @@ class WallpaperViewModel:ObservableObject{
     
     
     // MARK: - 切换壁纸的收藏状态
-    func toogleFavorite(for item: any WallpaperItem){
+   func toogleFavorite(for item: any WallpaperItem) {
         if favoriteWallpapers.contains(item.id) {
             favoriteWallpapers.removeAll { $0 == item.id }
             favoriteItems.removeAll { $0.id == item.id }
@@ -118,9 +118,7 @@ class WallpaperViewModel:ObservableObject{
             favoriteWallpapers.append(item.id)
             favoriteItems.append(item)
         }
-        // print("当前收藏的壁纸ID列表: \(favoriteWallpapers)")
-        // print("当前收藏的壁纸项目: \(favoriteItems)")
-         print("当前收藏的壁纸项目数量: \(favoriteItems.count)")
+        print("当前收藏的壁纸项目数量: \(favoriteItems.count)")
         
         getFavoriteList()
     }
@@ -134,24 +132,23 @@ class WallpaperViewModel:ObservableObject{
     
     // MARK: - 获取收藏的壁纸
     func getFavoriteWallpapers()->[any WallpaperItem]{
+        getFavoriteList() // 每次获取收藏列表时都更新
         return favoriteItems
-//        return favoriteItems.filter{item in
-//            switch item{
-//            case is WallpaperModel, is WallpaperTopicsPhotos, is WallpaperTopics:
-//                return true
-//            default:
-//                return false
-//            }
-//        }
+    }
+    
+    // MARK: - 删除收藏的壁纸
+    func deleteFavorite() -> [any WallpaperItem]{
+        favoriteWallpapers.removeAll()
+        favoriteItems.removeAll()
+        return favoriteItems
     }
     
     
-    
     //MARK:  获取收藏列表
-    func getFavoriteList() {
+  func getFavoriteList() {
         var newFavoriteItems: [any WallpaperItem] = []
         
-        for wallpaper in wallpaperList where favoriteWallpapers.contains(wallpaper.id) {
+        for wallpaper in allWallpapers where favoriteWallpapers.contains(wallpaper.id) {
             newFavoriteItems.append(wallpaper)
         }
         
@@ -165,6 +162,7 @@ class WallpaperViewModel:ObservableObject{
         
         DispatchQueue.main.async {
             self.favoriteItems = newFavoriteItems
+            print("更新后的收藏项目数量: \(self.favoriteItems.count)")
         }
     }
     
