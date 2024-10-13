@@ -15,12 +15,7 @@ struct AuthorDetailView: View {
         GeometryReader { geo in
             ScrollView {
                 VStack(spacing: 0) {
-                    WebImage(url: URL(string: wallpaper.wallpaperUser.profileImageLarge ?? ""))
-                        .frame(height: 80)
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .clipped()
-                    
+                    ProfileImageView(imageUrl: wallpaper.wallpaperUser.profileImageLarge ?? "", size: 100)
                     VStack(spacing: 8) {
                         Text(wallpaper.wallpaperUser.name)
                             .font(.title)
@@ -43,6 +38,44 @@ struct AuthorDetailView: View {
         .edgesIgnoringSafeArea(.top)
     }
 }
+
+struct ProfileImageView:View {
+    let imageUrl: String?
+    let size:CGFloat
+    var body: some View {
+         if let imageUrl = imageUrl,
+            let url = URL(string: imageUrl) {
+             WebImage(url: url)
+                 .resizable()
+                 .aspectRatio(contentMode: .fill)
+                 .frame(width: size, height: size)
+                 .clipShape(Circle())
+         } else {
+             defaultImage
+         }
+     }
+     
+     private var placeholderImage: some View {
+         Image(systemName: "person.crop.circle.fill")
+             .resizable()
+             .aspectRatio(contentMode: .fit)
+             .foregroundColor(.gray)
+     }
+     
+     private var defaultImage: some View {
+         Image(systemName: "square.and.arrow.up.on.square")
+             .resizable()
+             .aspectRatio(contentMode: .fit)
+             .frame(width: size, height: size)
+             .foregroundColor(.gray)
+             .background(Color.secondary.opacity(0.2))
+             .clipShape(Circle())
+     }
+ }
+
+
+
+
 
 #Preview {
     AuthorDetailView(wallpaper: WallpaperModel.sampleWallpaper)

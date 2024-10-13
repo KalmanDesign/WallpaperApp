@@ -79,7 +79,7 @@ struct ImageDetailView: View {
         // 设置 sheet，用于显示作者详细信息
         .sheet(isPresented: $isShowSheet) {
             AuthorDetailView(wallpaper: wallpaper)
-                .presentationDetents([.fraction(0.3)])
+                .presentationDetents([.fraction(0.32), .medium])
         }
     }
     
