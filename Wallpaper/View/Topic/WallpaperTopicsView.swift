@@ -17,8 +17,8 @@ struct WallpaperTopicsView: View {
             }else{
                 ScrollView(.vertical,showsIndicators: false){
                     ForEach(vm.topics,id: \.id){topic in
-                        NavigationLink(destination: TopicsDetailView(slug: topic.slug)) {
-                            TopicCard(topic: topic)
+                        NavigationLink(destination: TopicsDetailView(slug: topic.slug).toolbar(.hidden, for:.tabBar)) {
+                                TopicCard(topic: topic)
                         }
                     }
                 }

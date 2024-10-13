@@ -41,13 +41,13 @@ struct TopicsDetailView: View {
                             .foregroundColor(.white)
                         }
                     WaterfallGrid(vm.topicPhotos) { photo in
-                        WebImage(url: URL(string: photo.urls.small))
-                            .resizable()
-                            .scaledToFit()
-                            .cornerRadius(8)
-                            .onTapGesture {
-                                selectedWallpaper = photo
-                            }
+                        NavigationLink(destination: ImageDetailView(wallpaper: photo).toolbar(.hidden, for: .tabBar)) {
+                            WebImage(url: URL(string: photo.urls.small))
+                                .resizable()
+                                .scaledToFit()
+                                .cornerRadius(8)
+                        }
+                        
                     }
                     .gridStyle(columns: 2,animation: .easeInOut(duration: 0.5))
                 }
@@ -61,9 +61,6 @@ struct TopicsDetailView: View {
                 await vm.fetchAllTopics()
                 currentTopic = vm.topics.first
             }
-        }
-        .fullScreenCover(item: $selectedWallpaper){wallpaper in
-            ImageDetailView(wallpaper: wallpaper)
         }
     }
     

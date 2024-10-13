@@ -63,7 +63,7 @@ struct ProfileImageView:View {
      }
      
      private var defaultImage: some View {
-         Image(systemName: "square.and.arrow.up.on.square")
+         Image(systemName: "person.fill")
              .resizable()
              .aspectRatio(contentMode: .fit)
              .frame(width: size, height: size)

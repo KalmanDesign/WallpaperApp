@@ -90,21 +90,36 @@ class WallpaperViewModel:ObservableObject{
     }
     
     // MARK: - 获取主题的照片
-    func fetchPhotosForTopic(slug: String) async {
+    func fetchPhotosForTopic(slug: String, retries: Int = 3) async {
         isLoading = true
-        do {
-            let photos = try await wallpaperAPI.fetchPhotosForTopic(slug: slug)
-            await MainActor.run {
-                self.topicPhotos = photos
-                self.isLoading = false
+        var currentRetry = 0
+        
+        while currentRetry < retries {
+            do {
+                let photos = try await wallpaperAPI.fetchPhotosForTopic(slug: slug)
+                await MainActor.run {
+                    self.topicPhotos = photos
+                    self.isLoading = false
+                }
+                return
+            } catch {
+                currentRetry += 1
+                if currentRetry == retries {
+                    await MainActor.run {
+                        self.errorMassage = "获取主题照片失败，已重试\(retries)次：\(error.localizedDescription)"
+                        self.isLoading = false
+                        print("获取主题照片最终失败")
+                        print("错误详情: \(error)")
+                    }
+                } else {
+                    print("获取主题照片失败，正在进行第\(currentRetry)次重试")
+                    do {
+                        try await Task.sleep(nanoseconds: 1_000_000_000) // 等待1秒后重试
+                    } catch {
+                        print("在等待重试时发生错误: \(error)")
+                    }
+                }
             }
-        } catch {
-            await MainActor.run {
-                self.errorMassage = "获取主题照片时出错：\(error.localizedDescription)"
-                self.isLoading = false
-            }
-            print("Failed to fetch photos for topic")
-            print("错误: \(error)")
         }
     }
     

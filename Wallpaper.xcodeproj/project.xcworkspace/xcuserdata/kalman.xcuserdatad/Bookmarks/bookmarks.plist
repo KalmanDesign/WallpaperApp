@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>92</string>
+					<string>72</string>
 					<key>StartingColumnNumber</key>
 					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>91</string>
+					<string>71</string>
 					<key>Timestamp</key>
-					<string>750494341.3699059</string>
+					<string>750525525.026543</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,16 +34,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>            }
+				<string>//    let onTapWallpaper: (WallpaperModel) -&gt; Void
 </string>
 				<key>leading</key>
-				<string>                    hasLoaded = true //
-                }
+				<string>    let wallpapers: [WallpaperModel]
+    let isGrid: Bool
 </string>
 				<key>trailing</key>
-				<string>        }
-        .fullScreenCover(item: $selectedWallpaper){wallpaper in
-            ImageDetailView(wallpaper: wallpaper)
+				<string>    
+    var body: some View {
+        WaterfallGrid(wallpapers) { wallpaper in
 </string>
 			</dict>
 			<key>type</key>
