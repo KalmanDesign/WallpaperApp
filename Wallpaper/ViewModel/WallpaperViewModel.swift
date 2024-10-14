@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 import Photos
 
+@MainActor
 class WallpaperViewModel:ObservableObject{
     @Published var wallpaper: WallpaperModel? // 当前壁纸
     @Published var wallpaperList: [WallpaperModel] = [] // 壁纸列表
@@ -28,8 +29,8 @@ class WallpaperViewModel:ObservableObject{
     
     // MARK: - 获取随机照片
     func fetchRandomPhotos(num: Int) async{
-        self.isLoading = true
-        self.errorMassage = nil
+        isLoading = true
+        errorMassage = nil
         let maxRetries = 3 // 最大重试次数
         var retries = 0 // 当前重试次数
         while retries < maxRetries {
@@ -237,7 +238,6 @@ class WallpaperViewModel:ObservableObject{
             // 请求访问相册的权限
             PHPhotoLibrary.requestAuthorization { [weak self] status in
                 guard let self = self else { return }
-                
                 switch status {
                 case .authorized:
                     // 修改这里：使用 PHPhotoLibrary 来保存图片
@@ -264,6 +264,8 @@ class WallpaperViewModel:ObservableObject{
                         self.handleSaveError("请在设置中允许访问相册")
                         completion(false)
                     }
+                case .limited:
+                    <#code#>
                 @unknown default:
                     DispatchQueue.main.async {
                         self.handleSaveError("未知错误")

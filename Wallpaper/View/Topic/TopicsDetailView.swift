@@ -18,7 +18,7 @@ struct TopicsDetailView: View {
     
     let slug: String
     var body: some View {
-        ScrollView(.vertical){
+        ScrollView(.vertical, showsIndicators: false){
             ZStack{
                 VStack(spacing:16){
                     //MARK: Pic

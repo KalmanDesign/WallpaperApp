@@ -52,7 +52,9 @@ struct FavoritesView: View {
             .toolbar {
                 ToolbarItem {
                         Button(action: {
-                            vm.deleteFavorite()
+                            Task{
+                                vm.deleteFavorite()
+                            }
                         }) {
                             Image(systemName: "trash.fill")
                         }

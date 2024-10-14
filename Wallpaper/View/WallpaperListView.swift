@@ -55,14 +55,14 @@ struct WallpaperListView: View {
             }
         }
         .preferredColorScheme(.dark)
-        .onAppear {
-            if !hasLoaded {
-                Task {
-                    await vm.fetchRandomPhotos(num: 30)
-                    hasLoaded = true
-                }
-            }
-        }
+//        .onAppear {
+//            if !hasLoaded {
+//                Task {
+//                    await vm.fetchRandomPhotos(num: 30)
+//                    hasLoaded = true
+//                }
+//            }
+//        }
     }
 }
 

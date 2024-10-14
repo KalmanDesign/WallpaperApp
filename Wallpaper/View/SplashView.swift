@@ -12,10 +12,6 @@ struct SplashView: View {
     var body: some View {
         ZStack {
             Color.blue // 或者使用您的品牌颜色
-            Image("Files") // 替换为您的启动页 logo
-                .resizable()
-                .scaledToFit()
-                .frame(width: 200, height: 200)
         }
         .ignoresSafeArea()
         .onAppear(){
