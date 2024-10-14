@@ -27,6 +27,7 @@ struct FavoritesView: View {
                 } else {
                     ScrollView(showsIndicators: false) {
                         WaterfallGrid(vm.favoriteItems, id: \.id) { wallpaper in
+                        NavigationLink(destination: ImageDetailView(wallpaper: wallpaper).toolbar(.hidden,for: .tabBar)) {
                             WebImage(url: URL(string: getImageUrl(wallpaper)))
                                 // .resizable()
                                 // .scaledToFill()
@@ -34,9 +35,8 @@ struct FavoritesView: View {
                                 .cornerRadius(12)
                                 // .aspectRatio(contentMode: .fill)
                                 .aspectRatio(3/4, contentMode: .fill) // 设置宽高比为 3:4
-                                .onTapGesture {
-                                    selectedWallpaper = wallpaper
-                                }
+                             
+                        }
                         }
                         .gridStyle(
                             columnsInPortrait: 1,

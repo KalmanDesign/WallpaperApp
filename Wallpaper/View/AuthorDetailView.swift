@@ -49,6 +49,7 @@ struct ProfileImageView:View {
                  .resizable()
                  .aspectRatio(contentMode: .fill)
                  .frame(width: size, height: size)
+                 .background(Color.white) // 添加默认白色背景
                  .clipShape(Circle())
          } else {
              defaultImage
@@ -60,6 +61,8 @@ struct ProfileImageView:View {
              .resizable()
              .aspectRatio(contentMode: .fit)
              .foregroundColor(.gray)
+             .background(Color.white) // 添加默认白色背景
+             .clipShape(Circle())
      }
      
      private var defaultImage: some View {
@@ -68,7 +71,7 @@ struct ProfileImageView:View {
              .aspectRatio(contentMode: .fit)
              .frame(width: size, height: size)
              .foregroundColor(.gray)
-             .background(Color.secondary.opacity(0.2))
+             .background(Color.white) // 添加默认白色背景
              .clipShape(Circle())
      }
  }

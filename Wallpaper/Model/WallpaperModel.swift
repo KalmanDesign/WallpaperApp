@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import SwiftData
 
 // 定义一个符合Identifiable和Codable协议的结构体WallpaperModel
+
 struct WallpaperModel: Codable, Identifiable {
     let id: String
     let slug: String
