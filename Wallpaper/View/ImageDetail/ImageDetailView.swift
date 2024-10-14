@@ -27,13 +27,19 @@ struct ImageDetailView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
                 WebImage(url: URL(string: imageURL))
                     .resizable()
-                    .scaledToFill()
+                    .indicator(content: { isAnimating, progress in
+                        ProgressView()
+                            .controlSize(.large) // 常规
+                            .progressViewStyle(.circular)
+                            .foregroundStyle(.white) // 进度条颜色
+                    })
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geo.size.width, height: geo.size.height)
                     .blur(radius: overlayState == 1 ? 10 : 0)
-                    .scaleEffect(overlayState == 1 ? 1.2 : 1)
+                    .scaleEffect(overlayState == 1 ? 1.2 : 1, anchor: .center)
             }
         }
         .edgesIgnoringSafeArea(.all)
-       
         .overlay(alignment:.top){
             NormalToastView(isShow: showFavoriteToast,
                             message: vm.isFavorite(wallpaper) ? "Favorite successfully" : "Collection failed",
@@ -61,7 +67,7 @@ struct ImageDetailView: View {
                 .zIndex(0)
             }
         }
-         .overlay(alignment:.bottom) {
+        .overlay(alignment:.bottom) {
             buttonGroup
                 .padding(.horizontal,16)
                 .zIndex(100)
