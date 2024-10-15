@@ -34,16 +34,16 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>//    let onTapWallpaper: (WallpaperModel) -&gt; Void
+				<string>                    .cornerRadius(8)
 </string>
 				<key>leading</key>
-				<string>    let wallpapers: [WallpaperModel]
-    let isGrid: Bool
+				<string>                    .resizable()
+                    .scaledToFit()
 </string>
 				<key>trailing</key>
-				<string>    
-    var body: some View {
-        WaterfallGrid(wallpapers) { wallpaper in
+				<string>                  
+            }
+        }
 </string>
 			</dict>
 			<key>type</key>

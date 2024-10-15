@@ -13,24 +13,37 @@ import Photos
 
 @MainActor
 class WallpaperViewModel:ObservableObject{
-    @Published var wallpaper: WallpaperModel? // 当前壁纸
-    @Published var wallpaperList: [WallpaperModel] = [] // 壁纸列表
-    @Published var topics: [WallpaperTopics] = [] // 主题列表
-    @Published var topicPhotos: [WallpaperTopicsPhotos] = [] // 主题的照片列表
-    @Published var allWallpapers: [WallpaperModel] = [] // 新增：存储所有获取过的壁纸
-    @Published var isLoading = false // 是否正在加载
-    @Published var errorMassage: String? // 错误信息
-    @Published var favoriteWallpapers: [String] = [] // 收藏的壁纸id
+    // 当前壁纸
+    @Published var wallpaper: WallpaperModel?
+    // 壁纸列表
+    @Published var wallpaperList: [WallpaperModel] = []
+    // 主题列表
+    @Published var topics: [WallpaperTopics] = []
+    // 主题的照片列表
+    @Published var topicPhotos: [WallpaperTopicsPhotos] = []
+    // 新增：存储所有获取过的壁纸
+    @Published var allWallpapers: [WallpaperModel] = []
+    // 是否正在加载
+    @Published var isLoading = false
+    // 错误信息
+    @Published var errorMassage: String?
+    // 收藏的壁纸id
+    @Published var favoriteWallpapers: [String] = []
+    // 收藏的壁纸项目
     @Published var favoriteItems: [any WallpaperItem] = []
+    // 是否正在保存图片
     @Published var isSavingImage = false
+    // 保存图片的错误信息
     @Published var saveImageError: String?
-    @Published var shouldCropImage: Bool = false // 用户设置，是否裁剪图片
+    // 用户设置，是否裁剪图片
+    @Published var shouldCropImage: Bool = false
+    // 是否使用自定义相册
+    @Published var useCustomAlbum: Bool = false
+    // 自定义相册名称
+    @Published var customAlbumName: String = "Kwallpaper"
 
-    @Published var useCustomAlbum: Bool = false // 是否使用自定义相册
-    @Published var customAlbumName: String = "Kwallpaper" // 自定义相册名称
-
-    
-    private let wallpaperAPI = APIService() // 壁纸API
+    // 壁纸API
+    private let wallpaperAPI = APIService()
     
     // MARK: - 获取随机照片
     func fetchRandomPhotos(num: Int) async{
@@ -40,20 +53,16 @@ class WallpaperViewModel:ObservableObject{
         var retries = 0 // 当前重试次数
         while retries < maxRetries {
             do{
-                print("开始获取随机照片，数量：\(num), 重试次数：\(retries)")
                 let result = try await wallpaperAPI.fetchRandomPhotos(count: num)
                 await MainActor.run {
                     self.wallpaperList.append(contentsOf: result)
                     self.allWallpapers.append(contentsOf: result)
-                    print("更新后的 wallpaperList 数量：\(self.wallpaperList.count)")
-                    print("更新后的 allWallpapers 数量：\(self.allWallpapers.count)")
                     self.allWallpapers = Array(NSOrderedSet(array: self.allWallpapers)) as! [WallpaperModel]
                 }
                 break // 成功获取后退出循环
             }catch let error as NSError{
                 retries += 1 // 每次失败都增加重试次数
                 errorMassage = "获取壁纸失败, 错误信息: \(error.localizedDescription)"
-                print("获取壁纸失败, 错误信息: \(error.localizedDescription), 重试次数：\(retries)")
                 if retries == maxRetries {
                     print("达到最大重试次数，停止重试")
                     break // 达到最大重试次数后退出循环
@@ -129,9 +138,8 @@ class WallpaperViewModel:ObservableObject{
         }
     }
     
-    
     // MARK: - 切换壁纸的收藏状态
-   func toogleFavorite(for item: any WallpaperItem) {
+    func toogleFavorite(for item: any WallpaperItem) {
         if favoriteWallpapers.contains(item.id) {
             favoriteWallpapers.removeAll { $0 == item.id }
             favoriteItems.removeAll { $0.id == item.id }
@@ -149,8 +157,6 @@ class WallpaperViewModel:ObservableObject{
         return favoriteWallpapers.contains(item.id)
     }
     
-    
-    
     // MARK: - 获取收藏的壁纸
     func getFavoriteWallpapers()->[any WallpaperItem]{
         getFavoriteList() // 每次获取收藏列表时都更新
@@ -164,9 +170,8 @@ class WallpaperViewModel:ObservableObject{
         return favoriteItems
     }
     
-    
-    //MARK:  获取收藏列表
-  func getFavoriteList() {
+    // MARK:  获取收藏列表
+    func getFavoriteList() {
         var newFavoriteItems: [any WallpaperItem] = []
         
         for wallpaper in allWallpapers where favoriteWallpapers.contains(wallpaper.id) {
@@ -187,8 +192,7 @@ class WallpaperViewModel:ObservableObject{
         }
     }
     
-    
-    //MARK:  保存图片的方法
+    // MARK:  保存图片的方法
     func saveImage(from urlString: String, completion: @escaping (Bool) -> Void) {
         // 使用 guard 语句检查图片 URL 是否有效
         guard let imageURL = URL(string: urlString) else {
@@ -325,7 +329,7 @@ class WallpaperViewModel:ObservableObject{
         }.resume()
     }
 
-       // MARK: - 图像处理
+    // MARK: - 图像处理
     func cropImageToScreenSize(_ image: UIImage) -> UIImage {
         let screenSize = UIScreen.main.bounds.size
         let imageSize = image.size
@@ -335,8 +339,6 @@ class WallpaperViewModel:ObservableObject{
         let scaledHeight = imageSize.height * scale
         let xOffset = (scaledWidth - screenSize.width) / 2
         let yOffset = (scaledHeight - screenSize.height) / 2
-        
-        let cropRect = CGRect(x: xOffset, y: yOffset, width: screenSize.width, height: screenSize.height)
         
         UIGraphicsBeginImageContextWithOptions(screenSize, false, 0)
         image.draw(in: CGRect(x: -xOffset, y: -yOffset, width: scaledWidth, height: scaledHeight))
