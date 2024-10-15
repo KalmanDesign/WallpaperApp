@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@" : {
+
+    },
+    "build version:%@" : {
+
+    },
     "Calculating..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -210,6 +216,9 @@
           }
         }
       }
+    },
+    "Email" : {
+
     },
     "FAQ" : {
       "extractionState" : "manual",
@@ -445,7 +454,13 @@
         }
       }
     },
+    "Kalman0715@gmail.com" : {
+
+    },
     "Setting" : {
+
+    },
+    "Telegram" : {
 
     },
     "Topic" : {
@@ -593,6 +608,27 @@
         }
       }
     },
+    "X" : {
+
+    },
+    "下载选项" : {
+
+    },
+    "使用自定义相册" : {
+
+    },
+    "关注我" : {
+
+    },
+    "原图" : {
+
+    },
+    "取消" : {
+
+    },
+    "开启原图开关后，将依据设置尺寸下载图片。" : {
+
+    },
     "我的收藏" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -610,6 +646,9 @@
         }
       }
     },
+    "新相册名" : {
+
+    },
     "暂时没有收藏" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -622,10 +661,91 @@
         "ja" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "コレクションはまだありません"
+            "value" : "コレ���ションはまだありません"
           }
         }
       }
+    },
+    "更改自定义相册名" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Custom Album Name"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムアルバム名を変更"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改自定义相册名"
+          }
+        }
+      }
+    },
+    "点击更改自定义相册名" : {
+
+    },
+    "确定" : {
+
+    },
+    "自定义相册" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Album"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタムアルバム"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义相册"
+          }
+        }
+      }
+    },
+    "自定义相册名称:" : {
+
+    },
+    "自适应" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptive"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自動調整"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自适应"
+          }
+        }
+      }
+    },
+    "请输入新的相册名称" : {
+
     },
     "随机生成" : {
       "extractionState" : "manual",
@@ -640,6 +760,29 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "ランダム生成"
+          }
+        }
+      }
+    },
+    "默认" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认"
           }
         }
       }

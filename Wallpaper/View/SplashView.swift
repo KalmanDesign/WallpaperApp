@@ -11,7 +11,11 @@ struct SplashView: View {
     @EnvironmentObject var vm: WallpaperViewModel
     var body: some View {
         ZStack {
-            Color.blue // 或者使用您的品牌颜色
+            Color.black // 或者使用您的品牌颜色
+            Image("logo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 160)
         }
         .ignoresSafeArea()
         .onAppear(){

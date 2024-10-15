@@ -21,10 +21,14 @@ struct ImageDetailView: View {
     @State private var showSaveToast = false
     @State private var overlayState: Int = 0
     
+    @State private var saveResult: (success: Bool, error: String?) = (false, nil)
+    
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+                //                Color.black.edgesIgnoringSafeArea(.all)
+                
                 WebImage(url: URL(string: imageURL))
                     .resizable()
                     .indicator(content: { isAnimating, progress in
@@ -169,16 +173,23 @@ struct ImageDetailView: View {
             
             // 保存按钮
             Button {
-                
-                vm.saveImage(from: imageURL) {_ in}
-                let impact = UIImpactFeedbackGenerator(style: .rigid)
+                 let impact = UIImpactFeedbackGenerator(style: .rigid)
                 impact.impactOccurred()
-                withAnimation {
+                guard let url = URL(string: imageURL) else {
+                    saveResult = (false, "Invalid image URL")
                     showSaveToast = true
+                    return
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    withAnimation {
-                        showSaveToast = false
+                
+                vm.saveImage(url: url) { success, message in
+                    saveResult = (success, message)
+                    showSaveToast = true
+                    
+                    // 3秒后隐藏 toast
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        withAnimation {
+                            showSaveToast = false
+                        }
                     }
                 }
             } label: {

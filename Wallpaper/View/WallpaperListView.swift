@@ -25,7 +25,7 @@ struct WallpaperListView: View {
                     WallpaperGridView(wallpapers: vm.allWallpapers, isGrid: isGrid)
                     Button(action: {
                         Task {
-                            await vm.fetchRandomPhotos(num: 10)
+                            await vm.fetchRandomPhotos(num: 24)
                             scrollToTop = true
                         }
                     }, label: {
@@ -55,14 +55,6 @@ struct WallpaperListView: View {
             }
         }
         .preferredColorScheme(.dark)
-//        .onAppear {
-//            if !hasLoaded {
-//                Task {
-//                    await vm.fetchRandomPhotos(num: 30)
-//                    hasLoaded = true
-//                }
-//            }
-//        }
     }
 }
 

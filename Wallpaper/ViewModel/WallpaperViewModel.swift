@@ -24,6 +24,11 @@ class WallpaperViewModel:ObservableObject{
     @Published var favoriteItems: [any WallpaperItem] = []
     @Published var isSavingImage = false
     @Published var saveImageError: String?
+    @Published var shouldCropImage: Bool = false // 用户设置，是否裁剪图片
+
+    @Published var useCustomAlbum: Bool = false // 是否使用自定义相册
+    @Published var customAlbumName: String = "Kwallpaper" // 自定义相册名称
+
     
     private let wallpaperAPI = APIService() // 壁纸API
     
@@ -238,9 +243,10 @@ class WallpaperViewModel:ObservableObject{
             // 请求访问相册的权限
             PHPhotoLibrary.requestAuthorization { [weak self] status in
                 guard let self = self else { return }
+                
                 switch status {
                 case .authorized:
-                    // 修改这里：使用 PHPhotoLibrary 来保存图片
+                    // 保持原有的 authorized 代码不变
                     PHPhotoLibrary.shared().performChanges({
                         PHAssetChangeRequest.creationRequestForAsset(from: image)
                     }) { success, error in
@@ -265,10 +271,23 @@ class WallpaperViewModel:ObservableObject{
                         completion(false)
                     }
                 case .limited:
-                    <#code#>
+                    // 处理有限访问权限的情况
+                    PHPhotoLibrary.shared().performChanges({
+                        PHAssetChangeRequest.creationRequestForAsset(from: image)
+                    }) { success, error in
+                        DispatchQueue.main.async {
+                            if success {
+                                self.saveImageError = nil
+                                completion(true)
+                            } else if let error = error {
+                                self.handleSaveError("保存图片失败（有限访问权限）: \(error.localizedDescription)")
+                                completion(false)
+                            }
+                        }
+                    }
                 @unknown default:
                     DispatchQueue.main.async {
-                        self.handleSaveError("未知错误")
+                        self.handleSaveError("未知的授权状态")
                         completion(false)
                     }
                 }
@@ -281,6 +300,127 @@ class WallpaperViewModel:ObservableObject{
         // 在主线程中设置保存图片的错误信息
         DispatchQueue.main.async {
             self.saveImageError = message
+        }
+    }
+    
+    // MARK: - 保存图片
+    func saveImage(url: URL, completion: @escaping (Bool, String?) -> Void) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                if let data = data, let image = UIImage(data: data) {
+                    let finalImage = self.shouldCropImage ? self.cropImageToScreenSize(image) : image
+                    self.saveImageToCustomAlbum(finalImage, useCustomAlbum: self.useCustomAlbum, albumName: self.customAlbumName) { success, error in
+                        if success {
+                            completion(true, "图片成功保存到 \(self.useCustomAlbum ? self.customAlbumName : "相机胶卷") 相册")
+                        } else {
+                            completion(false, "保存图片失败: \(error?.localizedDescription ?? "未知错误")")
+                        }
+                    }
+                } else {
+                    completion(false, "加载图片失败: \(error?.localizedDescription ?? "Failed to load image")")
+                }
+            }
+        }.resume()
+    }
+
+       // MARK: - 图像处理
+    func cropImageToScreenSize(_ image: UIImage) -> UIImage {
+        let screenSize = UIScreen.main.bounds.size
+        let imageSize = image.size
+        let scale = max(screenSize.width / imageSize.width, screenSize.height / imageSize.height)
+        
+        let scaledWidth = imageSize.width * scale
+        let scaledHeight = imageSize.height * scale
+        let xOffset = (scaledWidth - screenSize.width) / 2
+        let yOffset = (scaledHeight - screenSize.height) / 2
+        
+        let cropRect = CGRect(x: xOffset, y: yOffset, width: screenSize.width, height: screenSize.height)
+        
+        UIGraphicsBeginImageContextWithOptions(screenSize, false, 0)
+        image.draw(in: CGRect(x: -xOffset, y: -yOffset, width: scaledWidth, height: scaledHeight))
+        let croppedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return croppedImage ?? image
+    }
+
+    // MARK: - 图像保存
+    func saveImageToCustomAlbum(_ image: UIImage, useCustomAlbum: Bool = true, albumName: String = "Kwallpaper", completion: @escaping (Bool, Error?) -> Void) {
+        func save() {
+            PHPhotoLibrary.shared().performChanges({
+                let assetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
+                guard let assetPlaceholder = assetRequest.placeholderForCreatedAsset else {
+                    return
+                }
+                
+                if useCustomAlbum, let albumAssetCollection = self.getAlbum(albumName: albumName) {
+                    let albumChangeRequest = PHAssetCollectionChangeRequest(for: albumAssetCollection)
+                    albumChangeRequest?.addAssets([assetPlaceholder] as NSFastEnumeration)
+                }
+            }, completionHandler: { success, error in
+                DispatchQueue.main.async {
+                    if success {
+                        print("图片成功保存到相册: \(useCustomAlbum ? albumName : "相机胶卷")")
+                    } else {
+                        print("保存图片失败: \(error?.localizedDescription ?? "未知错误")")
+                    }
+                    completion(success, error)
+                }
+            })
+        }
+        
+        if PHPhotoLibrary.authorizationStatus(for: .addOnly) == .authorized {
+            save()
+        } else {
+            PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+                if status == .authorized {
+                    save()
+                } else {
+                    DispatchQueue.main.async {
+                        completion(false, NSError(domain: "PhotoManagerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "没有权限访问相册"]))
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - 相册管理
+    private func getAlbum(albumName: String) -> PHAssetCollection? {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let collection = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+        
+        if let album = collection.firstObject {
+            return album
+        } else {
+            var albumPlaceholder: PHObjectPlaceholder?
+            
+            PHPhotoLibrary.shared().performChanges({
+                let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
+                albumPlaceholder = createAlbumRequest.placeholderForCreatedAssetCollection
+            }, completionHandler: { success, error in
+                if !success {
+                    print("创建相册失败: \(error?.localizedDescription ?? "")")
+                }
+            })
+            
+            guard let placeholder = albumPlaceholder else { return nil }
+            let collection = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [placeholder.localIdentifier], options: nil)
+            return collection.firstObject
+        }
+    }
+
+    func createCustomAlbum(named albumName: String) {
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: albumName)
+        }) { success, error in
+            if success {
+                print("成功创建相册: \(albumName)")
+            } else {
+                print("创建相册失败: \(error?.localizedDescription ?? "未知错误")")
+            }
         }
     }
 }
