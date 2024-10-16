@@ -5,6 +5,9 @@
 //  Created by Kalman on 2024/10/15.
 //
 
+// 文件作用：此文件用于获取应用程序的版本号和构建号，并提供一个包含版本号和构建号的字符串。
+
+
 import Foundation
 
 struct Configuration {
@@ -26,3 +29,4 @@ struct Configuration {
         return "\(version) (\(build))"
     }
 }
+
